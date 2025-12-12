@@ -36,7 +36,7 @@ public class EnemyAttack : MonoBehaviour
         }
         if (findChar1.TryGetComponent(out Health hp) && findChar1.TryGetComponent(out Move move))
         {
-            hp.DamageHero(damage);
+            hp.IsDamaged(damage);
         }
 
     }

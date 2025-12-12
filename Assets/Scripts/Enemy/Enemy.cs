@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] Health enemyHealth;
+    [SerializeField] public Health enemyHealth;
     [SerializeField] int damage;
     [SerializeField] private float speed;
     [SerializeField] private float agroRange;

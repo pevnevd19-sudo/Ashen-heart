@@ -1,13 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AbstractGun : MonoBehaviour
 {
-    public virtual void Attack ()
+    private int _damage;
+    private int _cooldown;
+
+    public int Damage {get => _damage;}
+    public int Cooldown {get => _cooldown;}
+       public virtual void Gun(int damage, int cooldown)
     {
-        int damage;
-        int cooldown;
-        int speed;
+        _cooldown = cooldown;
+        _damage = damage;
     }
 }

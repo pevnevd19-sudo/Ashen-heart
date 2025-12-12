@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 public class QuaternionTrain : MonoBehaviour
@@ -5,4 +6,9 @@ public class QuaternionTrain : MonoBehaviour
     [SerializeField]GameObject obj;
     private Vector3 vc;
     private Transform trans;
+
+    void Update()
+    {
+        
+    }
 }

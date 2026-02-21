@@ -1,14 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UserInput : MonoBehaviour
 {
-    public Vector2 vc;
-    [SerializeField] Move mv;
+    public static float Horizontal;
+    public static float Vertical;
+    public static bool InvertHorizontal= false;
+    public static bool InvertVertical= false;
+
+    [SerializeField] private Joystick joystick;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     private void Update()
     {
-        vc = new Vector2 (Input.GetAxis ("Horizontal"), Input.GetAxis ("Vertical"));
-        mv.setdirection (vc);
+        Horizontal = Input.GetAxis("Horizontal");
+        Vertical = Input.GetAxis("Vertical");
+
+
+        if (joystick!=null)
+        {
+            Horizontal = joystick.Horizontal;
+            Vertical = joystick.Vertical;
+        }
     }
 }
+//Bootstrapper

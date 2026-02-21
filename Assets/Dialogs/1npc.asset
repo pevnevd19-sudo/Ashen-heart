@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 854d695a1c89a1847bc1e007ae036ae7, type: 3}
+  m_Name: 1npc
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSO
+  startNode:
+    speaker: {fileID: 11400000, guid: 3f132416a34914b4dbb59abb20710081, type: 2}
+    text: 567
+    choices:
+    - textButton: 132
+      next:
+        speaker: {fileID: 11400000, guid: 3f132416a34914b4dbb59abb20710081, type: 2}
+        text: 123
+        choices:
+        - textButton: 12312
+          next:
+            speaker: {fileID: 11400000, guid: 4fec4ae048e40744da9d42013cc50ecf, type: 2}
+            text: 131312
+            choices: []
+    - textButton: 212
+      next:
+        speaker: {fileID: 11400000, guid: 4fec4ae048e40744da9d42013cc50ecf, type: 2}
+        text: 12342
+        choices:
+        - textButton: "\u0414\u0430\u043B\u0435\u0435"
+          next:
+            speaker: {fileID: 11400000, guid: 3f132416a34914b4dbb59abb20710081, type: 2}
+            text: 321
+            choices: []

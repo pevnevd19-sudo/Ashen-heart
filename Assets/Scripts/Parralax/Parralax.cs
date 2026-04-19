@@ -12,23 +12,12 @@ public class Parralax : MonoBehaviour
     {
         BackGround.Add(gameObject);
         startpos = transform.position.x;
-        length = GetComponent<SpriteRenderer>().bounds.size.x;
+        length = GetComponent<SpriteRenderer>().bounds.size.x - 2;
     }
     private void FixedUpdate()
     {
         float distance = (cam.transform.position.x * speedParralax);
-
         transform.position = new Vector3(startpos + distance, transform.position.y, transform.position.z);
-        SpawnBack();
     }
-    private void SpawnBack()
-    {
-        if (cam.transform.position.x > cam.transform.position.x + 30)
-        {
-            Instantiate(BackGround[0], new Vector3(transform.position.x + 40, transform.position.y), Quaternion.identity);
-            BackGround.Add(gameObject);
-            Destroy(BackGround[0]);
-            BackGround.RemoveAt(0);
-        }
-    }
+   
 }

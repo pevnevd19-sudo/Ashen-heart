@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerConfig
   _speed: 6.5
   _maxSpeed: 15
-  _jumpForce: 2
+  _jumpForce: 6
   smoothing: 5

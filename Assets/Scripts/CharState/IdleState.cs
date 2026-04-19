@@ -20,7 +20,7 @@ public class IdleState : IPlayerState
     public void Update()
     {
             p.animator.SetFloat("IsWalk", 0f);
-        if(p.IsMoving() > 0f) p.ChangeState(p.walkState);
+            if(p.IsMoving() > 0f) p.ChangeState(p.walkState);
     }
     public void Exit()
     {

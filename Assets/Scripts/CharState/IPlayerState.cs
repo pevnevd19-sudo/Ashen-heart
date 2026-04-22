@@ -1,6 +1,4 @@
 
-using UnityEditor;
-
 public interface IPlayerState
 {
     void Enter ();

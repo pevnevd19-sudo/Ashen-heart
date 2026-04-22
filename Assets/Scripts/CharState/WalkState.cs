@@ -3,7 +3,6 @@ using UnityEngine;
 public class WalkState : IPlayerState
 {
     private UserControl p;
-    private Animator animator;
 
     public WalkState(UserControl player)
     {
@@ -11,21 +10,22 @@ public class WalkState : IPlayerState
     }
     public void Enter()
     {
-        //if (p.IsMoving() >= 0.2f)
-        //{
-        //    animator.SetFloat("IsWalk",0.2f);
-        //}
+        p.animator.SetFloat("Speed", p.IsMoving());
+        p.playerState.ChangeState(p.walkState);
     }
     public void Update()
     {
-        p.animator.SetFloat("IsWalk",p.IsMoving());
-        if (p.IsMoving() <= 0) p.ChangeState(p.idleState);
+        p.animator.SetFloat("Speed", p.IsMoving());
+        p.playerState.ChangeState(p.walkState);
+        if (p.IsMoving() <= 0f)
+        {
+            p.animator.SetFloat("Speed", 0);
+            p.playerState.ChangeState(p.idleState);
+        }  
+        Debug.Log("Walk");
     }
     public void Exit()
     {
-        //if (p.IsMoving() <= 0.1f)
-        //{
-        //    animator.SetFloat("IsWalk", 0f);
-        //}
+        p.animator.SetFloat("Speed", 0);
     }
 }

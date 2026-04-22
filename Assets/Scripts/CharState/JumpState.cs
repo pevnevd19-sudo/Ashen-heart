@@ -11,17 +11,13 @@ public class JumpState : IPlayerState
     public void Enter()
     {
         p.animator.SetBool("IsJump", true);
+        p.playerState.ChangeState(p.jumpState);
     }
 
     public void Update()
     {
-        if (p.IsGrounded())
-        {
-            if (p.IsMoving() > 0.1f)
-                p.ChangeState(p.walkState);
-            else
-                p.ChangeState(p.idleState);
-        }
+        p.animator.SetBool("IsJump", !p.IsGrounded());
+        p.playerState.ChangeState(p.jumpState);
     }
 
     public void Exit()

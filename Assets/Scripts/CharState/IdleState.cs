@@ -2,31 +2,27 @@ using UnityEngine;
 
 public class IdleState : IPlayerState
 {
-        
+
     private UserControl p;
-    Animator animator;
     public IdleState(UserControl player)
     {
         p = player;
-        
+
     }
     public void Enter()
     {
-        //if (p.IsMoving() == 0f)
-        //{
-        //    animator.SetFloat("IsWalk", 0f);
-        //}
+        p.playerState.ChangeState(p.idleState);
     }
     public void Update()
     {
-            p.animator.SetFloat("IsWalk", 0f);
-            if(p.IsMoving() > 0f) p.ChangeState(p.walkState);
+        p.animator.SetFloat("Speed", p.IsMoving());
+        p.playerState.ChangeState(p.idleState);
+        if (p.IsMoving() < 0) p.playerState.ChangeState(p.walkState);
+        Debug.Log("idle");
     }
     public void Exit()
     {
-        //if (p.IsMoving() >= 0.1f)
-        //{
-        //    animator.SetFloat("IsWalk", 0.2f);
-        //}
+        p.animator.SetFloat("Speed", 0);
+
     }
 }

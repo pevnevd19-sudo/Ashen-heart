@@ -11,30 +11,39 @@ public class UserControl : MonoBehaviour
     [SerializeField] private float jumpCooldown;
 
     private float nextTimeJump;
-    private Rigidbody2D rbPlayer;
+    [SerializeField] private Rigidbody2D rbPlayer;
+    private CapsuleCollider2D playerCollider;
     private bool IsGround;
 
     private float horizontalInput;
     private float verticalInput;
 
-    public IPlayerState currentState;
+    public StateMachine playerState;
     public IdleState idleState;
     public WalkState walkState;
     public RunState runState;
     public JumpState jumpState;
+    public FallState fallState;
+    public CrouchIdleState crouchIdleState;
+    public CrouchWalkState crouchWalkState;
+
     public Animator animator;
 
     public int normalSpeed;
     public int minSpeed;
-    
+
 
     private void Awake()
     {
-        // playerConfig._speed = 6;
+        playerState = new StateMachine();
         idleState = new IdleState(this);
         walkState = new WalkState(this);
         runState = new RunState(this);
         jumpState = new JumpState(this);
+        fallState = new FallState(this);
+        crouchIdleState = new CrouchIdleState(this);
+        crouchWalkState = new CrouchWalkState(this);
+
         normalSpeed = 6;
         minSpeed = 0;
         jumpCooldown = 1.36f;
@@ -42,15 +51,19 @@ public class UserControl : MonoBehaviour
 
     void Start()
     {
-        ChangeState(idleState);
-        rbPlayer = GetComponent<Rigidbody2D>();
+        playerCollider = GetComponent<CapsuleCollider2D>();
+        playerState.ChangeState(idleState);
         animator = GetComponentInChildren<Animator>();
     }
     private void Update()
     {
-        if (currentState != null) currentState.Update();
+        float yVelocity = Mathf.Abs(rbPlayer.linearVelocity.y);
+        if (IsGround) yVelocity = 0;
+        playerState.Update();
         IsGround = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer);
-        Jump();  
+        Jump();
+        Fall();
+        Crouch();
     }
     private void FixedUpdate()
     {
@@ -61,14 +74,45 @@ public class UserControl : MonoBehaviour
     {
         if (UserInput.Vertical > 0.2 && IsGround && CanJump())
         {
-            ChangeState(jumpState);
+            playerState.ChangeState(jumpState);
             verticalInput = UserInput.Vertical;
             if (verticalInput > 0) verticalInput = 1;
-            Debug.Log(verticalInput);
             rbPlayer.linearVelocity = new Vector2(rbPlayer.linearVelocity.x, verticalInput * playerConfig._jumpForce);
             nextTimeJump = Time.time + jumpCooldown;
         }
+    }
+
+    private void Crouch()
+    {
+        verticalInput = UserInput.Vertical;
+        float sizeColliderY = playerCollider.size.y;
+        sizeColliderY = 0.8f;
+        if (IsMoving() <= 0 && verticalInput < 0)
+        {
+            playerState.ChangeState(crouchIdleState);
+        }
+        if (IsMoving() > 0 && verticalInput < 0)
+        {
+            playerState.ChangeState(crouchWalkState);
+        }
         
+    }
+    private void Fall()
+    {
+        if (rbPlayer.linearVelocity.y < -0.5f)
+        {
+            float linearVelocityX = rbPlayer.linearVelocity.x;
+            playerState.ChangeState(fallState);
+            linearVelocityX = 0;
+        }
+    }
+    public bool isFall()
+    {
+        if (rbPlayer.linearVelocity.y < -1f)
+        {
+            return true;
+        }
+        return false;
     }
     private bool CanJump()
     {
@@ -83,6 +127,18 @@ public class UserControl : MonoBehaviour
         float currentSpeed = rbPlayer.linearVelocity.x;
         float newSpeed = Mathf.Lerp(currentSpeed, targetSpeed, playerConfig.smoothing * Time.fixedDeltaTime);
         rbPlayer.linearVelocity = new Vector2(newSpeed, rbPlayer.linearVelocity.y);
+        if (UserInput.Horizontal <= 0) currentSpeed = 0; 
+        if (IsMoving() > 0.5f) playerState.ChangeState(walkState);
+        
+
+    }
+    public bool IsWalk()
+    {
+        if (rbPlayer.linearVelocity.x >= 0.5f)
+        {
+            return true;
+        }
+        return false;
     }
     public float IsMoving()
     {
@@ -90,27 +146,16 @@ public class UserControl : MonoBehaviour
         return HorizontalAbs;
     }
     public bool IsGrounded()
-    { 
-       return IsGround;
-    }
-    public float IsJump()
     {
-        return rbPlayer.linearVelocity.y;
+        return IsGround;
     }
+
     public void CharFlip()
     {
         if (horizontalInput > 0) transform.localScale = new Vector3(1, 1, 1);
         if (horizontalInput < 0) transform.localScale = new Vector3(-1, 1, 1);
     }
-    public void ChangeState(IPlayerState playerState)
-    {
-        if (currentState == playerState) return;
 
-        if (currentState != null) currentState.Exit();
-
-        currentState = playerState;
-        if (currentState != null) currentState.Enter();
-    }
 
     public void SetSpeed(int speed)
     {

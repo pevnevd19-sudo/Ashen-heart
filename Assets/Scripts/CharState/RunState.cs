@@ -11,7 +11,6 @@ public class RunState : IPlayerState
     public void Enter()
     {
         p.animator.SetFloat("Speed", p.IsMoving());
-        p.playerState.ChangeState(p.runState);
     }
     public void Update()
     {
@@ -22,7 +21,6 @@ public class RunState : IPlayerState
             p.playerState.ChangeState(p.walkState);
             p.animator.SetFloat("Speed", 0);
         }
-        Debug.Log("Run");
     }
     public void Exit()
     {

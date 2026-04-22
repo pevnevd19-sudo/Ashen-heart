@@ -1553,7 +1553,7 @@ Transform:
   m_GameObject: {fileID: 393232616}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12026739, y: 4.3022003, z: -10}
+  m_LocalPosition: {x: 0.30026746, y: 4.3022003, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1620,9 +1620,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 935653647}
     - target: {fileID: 5349959119582145750, guid: 3b973663cadcf994e985eba6d407fbd9, type: 3}
+      propertyPath: CrouchSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5349959119582145750, guid: 3b973663cadcf994e985eba6d407fbd9, type: 3}
       propertyPath: jumpCooldown
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5349959119582145750, guid: 3b973663cadcf994e985eba6d407fbd9, type: 3}
+      propertyPath: _playerTransform
+      value: 
+      objectReference: {fileID: 544410808}
     - target: {fileID: 5349959119582145750, guid: 3b973663cadcf994e985eba6d407fbd9, type: 3}
       propertyPath: _groundCheckRadius
       value: 1.2
@@ -1633,7 +1641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6588322873039543598, guid: 3b973663cadcf994e985eba6d407fbd9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4
+      value: -3.82
       objectReference: {fileID: 0}
     - target: {fileID: 6588322873039543598, guid: 3b973663cadcf994e985eba6d407fbd9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -124925,11 +124933,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2929252283123773938, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 250
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 2929252283123773938, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 250
+      value: 400
       objectReference: {fileID: 0}
     - target: {fileID: 2929252283123773938, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
       propertyPath: m_LocalScale.x
@@ -125001,11 +125009,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2929252285020697096, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 120
+      value: 230
       objectReference: {fileID: 0}
     - target: {fileID: 2929252285020697096, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 120
+      value: 230
       objectReference: {fileID: 0}
     - target: {fileID: 2929252285020697096, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
       propertyPath: m_AnchoredPosition.x

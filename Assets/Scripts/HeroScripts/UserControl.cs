@@ -6,9 +6,11 @@ public class UserControl : MonoBehaviour
     public PlayerConfig playerConfig;
 
     [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private Transform _groundCheck;
+    [SerializeField] private Transform _playerTransform;
     [SerializeField] private float _groundCheckRadius;
     [SerializeField] private float jumpCooldown;
+
+    public Transform PlayerTransform { get; }
 
     private float nextTimeJump;
     [SerializeField] private Rigidbody2D rbPlayer;
@@ -29,7 +31,8 @@ public class UserControl : MonoBehaviour
 
     public Animator animator;
 
-    public int normalSpeed;
+    public int WalkSpeed;
+    public int CrouchSpeed;
     public int minSpeed;
 
 
@@ -44,7 +47,8 @@ public class UserControl : MonoBehaviour
         crouchIdleState = new CrouchIdleState(this);
         crouchWalkState = new CrouchWalkState(this);
 
-        normalSpeed = 6;
+        CrouchSpeed = 1;
+        WalkSpeed = 6;
         minSpeed = 0;
         jumpCooldown = 1.36f;
     }
@@ -60,10 +64,11 @@ public class UserControl : MonoBehaviour
         float yVelocity = Mathf.Abs(rbPlayer.linearVelocity.y);
         if (IsGround) yVelocity = 0;
         playerState.Update();
-        IsGround = Physics2D.OverlapCircle(_groundCheck.position, _groundCheckRadius, _groundLayer);
+        IsGround = Physics2D.OverlapCircle(_playerTransform.position, _groundCheckRadius, _groundLayer);
         Jump();
         Fall();
         Crouch();
+        Debug.Log(playerConfig._speed);
     }
     private void FixedUpdate()
     {
@@ -85,21 +90,27 @@ public class UserControl : MonoBehaviour
     private void Crouch()
     {
         verticalInput = UserInput.Vertical;
-        float sizeColliderY = playerCollider.size.y;
-        sizeColliderY = 0.8f;
-        if (IsMoving() <= 0 && verticalInput < 0)
+        if (IsMoving() <= 0 && verticalInput <= -0.3f)
         {
             playerState.ChangeState(crouchIdleState);
+            float sizeColliderY = playerCollider.size.y;
+            UserInput.Vertical = -1;
+            sizeColliderY = 0.8f;
+            SetSpeed(CrouchSpeed);
         }
-        if (IsMoving() > 0 && verticalInput < 0)
+        if (IsMoving() >= 0.1f && verticalInput <= -0.3f)
         {
             playerState.ChangeState(crouchWalkState);
+            float sizeColliderY = playerCollider.size.y; 
+            UserInput.Vertical = -1;
+            sizeColliderY = 0.8f;
+            SetSpeed(CrouchSpeed);
         }
         
     }
     private void Fall()
     {
-        if (rbPlayer.linearVelocity.y < -0.5f)
+        if (rbPlayer.linearVelocity.y < -1f)
         {
             float linearVelocityX = rbPlayer.linearVelocity.x;
             playerState.ChangeState(fallState);
@@ -122,13 +133,13 @@ public class UserControl : MonoBehaviour
     public void Move()
     {
         horizontalInput = UserInput.Horizontal;
+        SetSpeed(WalkSpeed);
         float targetSpeed = horizontalInput * playerConfig._speed;
         targetSpeed = Mathf.Clamp(targetSpeed, -playerConfig._maxSpeed, playerConfig._maxSpeed);
         float currentSpeed = rbPlayer.linearVelocity.x;
         float newSpeed = Mathf.Lerp(currentSpeed, targetSpeed, playerConfig.smoothing * Time.fixedDeltaTime);
         rbPlayer.linearVelocity = new Vector2(newSpeed, rbPlayer.linearVelocity.y);
-        if (UserInput.Horizontal <= 0) currentSpeed = 0; 
-        if (IsMoving() > 0.5f) playerState.ChangeState(walkState);
+        if (IsMoving() > 0f) playerState.ChangeState(walkState);
         
 
     }
@@ -164,10 +175,10 @@ public class UserControl : MonoBehaviour
     }
     private void OnDrawGizmosSelected()
     {
-        if (_groundCheck)
+        if (_playerTransform)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
+            Gizmos.DrawWireSphere(_playerTransform.position, _groundCheckRadius);
         }
     }
 

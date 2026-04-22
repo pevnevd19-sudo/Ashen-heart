@@ -18,12 +18,6 @@ public class FallState : IPlayerState
     {
         p.animator.SetBool("IsFall", p.isFall());
         p.playerState.ChangeState(p.fallState);
-        if (!p.IsGrounded())
-        {
-            p.animator.SetBool("IsFall", true);
-        }
-            
-        Debug.Log("Fall");
         
     }
 

@@ -11,7 +11,6 @@ public class JumpState : IPlayerState
     public void Enter()
     {
         p.animator.SetBool("IsJump", true);
-        p.playerState.ChangeState(p.jumpState);
     }
 
     public void Update()

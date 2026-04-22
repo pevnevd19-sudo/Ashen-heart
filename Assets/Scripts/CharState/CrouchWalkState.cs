@@ -10,6 +10,7 @@ public class CrouchWalkState : IPlayerState
     public void Enter()
     {
         p.animator.SetBool("CrouchWalk", true);
+
     }
 
     public void Exit()
@@ -20,7 +21,6 @@ public class CrouchWalkState : IPlayerState
     public void Update()
     {
         p.animator.SetBool("CrouchWalk", true);
-        if (UserInput.Vertical >= 0) Exit();
-        Debug.Log("crouchWalk");
+        if (UserInput.Vertical > -0.3) Exit();
     }
 }

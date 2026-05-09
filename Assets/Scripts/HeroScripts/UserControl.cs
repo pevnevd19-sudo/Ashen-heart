@@ -1,185 +1,125 @@
 using System.Collections;
 using UnityEngine;
-
 public class UserControl : MonoBehaviour
 {
-    public PlayerConfig playerConfig;
-
+    [Header("Ground Check")]
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private Transform _playerTransform;
-    [SerializeField] private float _groundCheckRadius;
-    [SerializeField] private float jumpCooldown;
+    [SerializeField] private float _groundCheckRadius = 0.2f;
 
-    public Transform PlayerTransform { get; }
+    [Header("Player Stats")]
+    [SerializeField] public PlayerConfig playerConfig;
 
-    private float nextTimeJump;
+    [Header("Player Physics")]
     [SerializeField] private Rigidbody2D rbPlayer;
-    private CapsuleCollider2D playerCollider;
-    private bool IsGround;
+    public bool IsGround { get; private set; }
+    public Rigidbody2D Rigidbody => rbPlayer;
 
+    private CapsuleCollider2D playerCollider;
+    public float nextTimeJump;
+
+    [Header("Input")]
     private float horizontalInput;
     private float verticalInput;
 
-    public StateMachine playerState;
-    public IdleState idleState;
-    public WalkState walkState;
-    public RunState runState;
-    public JumpState jumpState;
-    public FallState fallState;
-    public CrouchIdleState crouchIdleState;
-    public CrouchWalkState crouchWalkState;
+    [Header("Player State")]
 
-    public Animator animator;
-
-    public int WalkSpeed;
-    public int CrouchSpeed;
-    public int minSpeed;
-
+    [Header("Player Visual")]
+    public Animator animator { get; private set; }
 
     private void Awake()
     {
-        playerState = new StateMachine();
-        idleState = new IdleState(this);
-        walkState = new WalkState(this);
-        runState = new RunState(this);
-        jumpState = new JumpState(this);
-        fallState = new FallState(this);
-        crouchIdleState = new CrouchIdleState(this);
-        crouchWalkState = new CrouchWalkState(this);
+        if (rbPlayer == null)
+        {
+            rbPlayer = GetComponent<Rigidbody2D>();
+        }
 
-        CrouchSpeed = 1;
-        WalkSpeed = 6;
-        minSpeed = 0;
-        jumpCooldown = 1.36f;
-    }
-
-    void Start()
-    {
         playerCollider = GetComponent<CapsuleCollider2D>();
-        playerState.ChangeState(idleState);
         animator = GetComponentInChildren<Animator>();
     }
-    private void Update()
+
+    private void Start()
     {
-        float yVelocity = Mathf.Abs(rbPlayer.linearVelocity.y);
-        if (IsGround) yVelocity = 0;
-        playerState.Update();
-        IsGround = Physics2D.OverlapCircle(_playerTransform.position, _groundCheckRadius, _groundLayer);
-        Jump();
-        Fall();
-        Crouch();
-        Debug.Log(playerConfig._speed);
-    }
-    private void FixedUpdate()
-    {
-        Move();
-        CharFlip();
-    }
-    private void Jump()
-    {
-        if (UserInput.Vertical > 0.2 && IsGround && CanJump())
-        {
-            playerState.ChangeState(jumpState);
-            verticalInput = UserInput.Vertical;
-            if (verticalInput > 0) verticalInput = 1;
-            rbPlayer.linearVelocity = new Vector2(rbPlayer.linearVelocity.x, verticalInput * playerConfig._jumpForce);
-            nextTimeJump = Time.time + jumpCooldown;
-        }
     }
 
-    private void Crouch()
+    private void Update()
     {
+        horizontalInput = UserInput.Horizontal;
         verticalInput = UserInput.Vertical;
-        if (IsMoving() <= 0 && verticalInput <= -0.3f)
-        {
-            playerState.ChangeState(crouchIdleState);
-            float sizeColliderY = playerCollider.size.y;
-            UserInput.Vertical = -1;
-            sizeColliderY = 0.8f;
-            SetSpeed(CrouchSpeed);
-        }
-        if (IsMoving() >= 0.1f && verticalInput <= -0.3f)
-        {
-            playerState.ChangeState(crouchWalkState);
-            float sizeColliderY = playerCollider.size.y; 
-            UserInput.Vertical = -1;
-            sizeColliderY = 0.8f;
-            SetSpeed(CrouchSpeed);
-        }
-        
+
+        IsGround = Physics2D.OverlapCircle(_playerTransform.position, _groundCheckRadius, _groundLayer);
+
     }
-    private void Fall()
+
+    private void FixedUpdate()
     {
-        if (rbPlayer.linearVelocity.y < -1f)
-        {
-            float linearVelocityX = rbPlayer.linearVelocity.x;
-            playerState.ChangeState(fallState);
-            linearVelocityX = 0;
-        }
     }
-    public bool isFall()
+
+    public void DoJump()
     {
-        if (rbPlayer.linearVelocity.y < -1f)
-        {
-            return true;
-        }
-        return false;
+        rbPlayer.linearVelocity = new Vector2(rbPlayer.linearVelocity.x, playerConfig.JumpForce);
+        nextTimeJump = Time.time + playerConfig.JumpCooldown;
     }
-    private bool CanJump()
+
+    public bool CanJump()
     {
         return Time.time >= nextTimeJump;
     }
 
-    public void Move()
+    public void Move(float speed)
     {
-        horizontalInput = UserInput.Horizontal;
-        SetSpeed(WalkSpeed);
-        float targetSpeed = horizontalInput * playerConfig._speed;
-        targetSpeed = Mathf.Clamp(targetSpeed, -playerConfig._maxSpeed, playerConfig._maxSpeed);
-        float currentSpeed = rbPlayer.linearVelocity.x;
-        float newSpeed = Mathf.Lerp(currentSpeed, targetSpeed, playerConfig.smoothing * Time.fixedDeltaTime);
-        rbPlayer.linearVelocity = new Vector2(newSpeed, rbPlayer.linearVelocity.y);
-        if (IsMoving() > 0f) playerState.ChangeState(walkState);
-        
+        playerConfig.CurrentSpeed = speed;
 
+        float targetSpeed = horizontalInput * playerConfig.CurrentSpeed;
+        float currentSpeed = rbPlayer.linearVelocity.x;
+
+        targetSpeed = Mathf.Clamp(targetSpeed, -speed, speed);
+
+        float newSpeed = Mathf.Lerp(
+            currentSpeed,
+            targetSpeed,
+            playerConfig.Smoothing * Time.fixedDeltaTime);
+
+        Debug.Log($"Move | horizontalInput={horizontalInput} | targetSpeed={targetSpeed} | currentSpeed={currentSpeed} | newSpeed={newSpeed}");
+
+        rbPlayer.linearVelocity = new Vector2(newSpeed, rbPlayer.linearVelocity.y);
     }
-    public bool IsWalk()
+
+    public float MoveXValue()
     {
-        if (rbPlayer.linearVelocity.x >= 0.5f)
-        {
-            return true;
-        }
-        return false;
-    }
-    public float IsMoving()
-    {
-        float HorizontalAbs = Mathf.Abs(rbPlayer.linearVelocity.x);
-        return HorizontalAbs;
-    }
-    public bool IsGrounded()
-    {
-        return IsGround;
+        return Mathf.Abs(rbPlayer.linearVelocity.x);
     }
 
     public void CharFlip()
     {
-        if (horizontalInput > 0) transform.localScale = new Vector3(1, 1, 1);
-        if (horizontalInput < 0) transform.localScale = new Vector3(-1, 1, 1);
-    }
-
-
-    public void SetSpeed(int speed)
-    {
-        playerConfig._speed = speed;
-        return;
-    }
-    private void OnDrawGizmosSelected()
-    {
-        if (_playerTransform)
+        if (horizontalInput > 0.01f)
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(_playerTransform.position, _groundCheckRadius);
+            transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+        else if (horizontalInput < -0.01f)
+        {
+            transform.localScale = new Vector3(-1f, 1f, 1f);
         }
     }
 
+    public void AnimPlay(string clipName)
+    {
+        if (string.IsNullOrWhiteSpace(clipName) || animator == null)
+        {
+            return;
+        }
+
+        animator.Play(clipName);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (_playerTransform == null)
+        {
+            return;
+        }
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(_playerTransform.position, _groundCheckRadius);
+    }
 }

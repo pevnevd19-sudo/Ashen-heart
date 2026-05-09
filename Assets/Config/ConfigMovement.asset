@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 748abf5060d67a6489e598c6257efc8c, type: 3}
   m_Name: ConfigMovement
   m_EditorClassIdentifier: Assembly-CSharp::PlayerConfig
-  _speed: 6.5
-  _maxSpeed: 15
-  _jumpForce: 6
-  smoothing: 5
+  CurrentSpeed: 6
+  RunSpeed: 6
+  SprintSpeed: 10
+  JumpForce: 6
+  Smoothing: 5
+  JumpCooldown: 1.36
+  CrouchSpeed: 2

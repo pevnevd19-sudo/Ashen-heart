@@ -17,7 +17,7 @@ public class UserInput : MonoBehaviour
     private void Update()
     {
         Horizontal = Input.GetAxis("Horizontal");
-        Vertical = Input.GetAxis("Vertical");
+        Vertical = Input.GetAxisRaw("Vertical");
 
 
         if (joystick!=null)

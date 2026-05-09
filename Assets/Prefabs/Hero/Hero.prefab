@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4217153051154620168}
   - component: {fileID: 609071726901546323}
   - component: {fileID: 5092842749593361028}
+  - component: {fileID: 8268792944177292828}
   m_Layer: 11
   m_Name: HeroVIsual
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1313469733938780964}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -119,7 +120,7 @@ Transform:
   m_GameObject: {fileID: 4803476160702946489}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.0202675, y: 0.9522004, z: -10}
+  m_LocalPosition: {x: 4.1202674, y: 0.9522004, z: -10}
   m_LocalScale: {x: 2.17, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -297,7 +298,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: -0.16}
-  m_Size: {x: 0.71, y: 1.54}
+  m_Size: {x: 0.7, y: 1.5}
   m_Direction: 0
 --- !u!114 &5349959119582145750
 MonoBehaviour:
@@ -311,16 +312,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73542a7f8ffa5ba409fe03a1d2d8ee37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UserControl
-  playerConfig: {fileID: 11400000, guid: 637961e9322f5f342a6e406927aefa7f, type: 2}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 1024
-  _groundCheck: {fileID: 6588322873039543598}
-  _groundCheckRadius: 1.21
-  jumpCooldown: 1
-  animator: {fileID: 5092842749593361028}
-  normalSpeed: 6
-  minSpeed: 0
+  _playerTransform: {fileID: 6588322873039543598}
+  _groundCheckRadius: 1.2
+  playerConfig: {fileID: 11400000, guid: 637961e9322f5f342a6e406927aefa7f, type: 2}
+  rbPlayer: {fileID: 5930845525321960763}
+  nextTimeJump: 0
+  playerState: {fileID: 8268792944177292828}
 --- !u!1001 &7832930433071239585
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -381,6 +381,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3339407682867083303, guid: 3d0777941382773479966955aef0e163, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5092842749593361028}
+    - targetCorrespondingSourceObject: {fileID: 3339407682867083303, guid: 3d0777941382773479966955aef0e163, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8268792944177292828}
   m_SourcePrefab: {fileID: 100100000, guid: 3d0777941382773479966955aef0e163, type: 3}
 --- !u!95 &5092842749593361028
 Animator:
@@ -404,3 +407,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8268792944177292828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313469733938780964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67eaab2eea5a17f41a9003098f07a40f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StateMachine
